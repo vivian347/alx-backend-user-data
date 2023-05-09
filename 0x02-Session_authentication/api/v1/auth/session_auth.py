@@ -2,11 +2,7 @@
 """ session_auth.py
 """
 
-import base64
-import binascii
-from typing import Tuple, Optional, TypeVar
 import uuid
-
 from models.user import User
 from api.v1.auth.auth import Auth
 

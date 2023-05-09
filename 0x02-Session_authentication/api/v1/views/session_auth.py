@@ -8,7 +8,8 @@ from os import getenv
 from models.user import User
 
 
-@app_views.route('/auth_session/logout', methods=['DELETE'], strict_slashes=False)
+@app_views.route('/auth_session/logout', methods=['DELETE'],
+                 strict_slashes=False)
 def session_logout() -> str:
     """ DELETE /api/v1/auth_session/logout
     Json contents:
@@ -55,4 +56,3 @@ def session_login() -> str:
     response = jsonify(user.to_json())
     response.set_cookie(session_cookie, session_id)
     return response
-

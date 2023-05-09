@@ -17,6 +17,9 @@ CORS(app, resources={r"/api/v1/*": {"origins": "*"}})
 auth = None
 if os.getenv('AUTH_TYPE') == 'basic_auth':
     auth = BasicAuth()
+elif os.getenv('AUTH_TYPE') == 'session_auth':
+    from api.v1.auth.session_auth import SessionAuth
+    auth = SessionAuth()
 else:
     auth = Auth()
 
@@ -26,10 +29,10 @@ def filter_request() -> None:
     """ Check if the request requires authentication"""
 
     excluded_paths = ['/api/v1/status/',
-                      '/api/v1/unauthorized/', '/api/v1/forbidden/']
+                      '/api/v1/unauthorized/', '/api/v1/forbidden/', '/api/v1/auth_session/login/']
     if auth:
         if auth.require_auth(request.path, excluded_paths):
-            if auth.authorization_header(request) is None:
+            if auth.authorization_header(request) is None and auth.session_cookie(request) is None:
                 abort(401)
             if auth.current_user(request) is None:
                 abort(403)

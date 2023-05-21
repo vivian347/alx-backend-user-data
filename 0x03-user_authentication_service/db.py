@@ -5,6 +5,8 @@ from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.orm.session import Session
+from sqlalchemy.orm.exc import NoResultFound
+from sqlalchemy.exc import InvalidRequestError
 
 from user import Base, User
 
@@ -36,3 +38,25 @@ class DB:
         self._session.add(new_user)
         self._session.commit()
         return new_user
+
+    def find_user_by(self, **kwargs):
+        """returns first row found in users table"""
+        try:
+            record =  self._session.query(User).filter_by(**kwargs).first()
+        except TypeError:
+            raise InvalidRequestError
+        if record is None:
+            raise NoResultFound
+        return record
+
+    def update_user(self, user_id: int, **kwargs)->None:
+        """locate user to update and update attributes"""
+       
+        user = self.find_user_by(id=user_id)
+        for attr, val in kwargs.items():
+            if hasattr(user, attr):
+                setattr(user, attr, val)
+            else:
+                raise ValueError
+        self._session.commit()
+        return None

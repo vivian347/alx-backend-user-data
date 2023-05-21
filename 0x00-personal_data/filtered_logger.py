@@ -42,7 +42,7 @@ def get_db() -> connection.MySQLConnection:
     db_host = os.getenv('PERSONAL_DATA_DB_HOST')
     db_name = os.getenv('PERSONAL_DATA_DB_NAME')
 
-    connection=mysql.connector.connect(
+    connection = mysql.connector.connect(
         user=db_username,
         password=db_pwd,
         host=db_host,
@@ -72,7 +72,8 @@ class RedactingFormatter(logging.Formatter):
 
         for field in self.fields:
             log_message = filter_datum([field],
-                    self.REDACTION, log_message, self.SEPARATOR)
+                                       self.REDACTION, log_message,
+                                       self.SEPARATOR)
 
         return log_message
 

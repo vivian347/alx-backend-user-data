@@ -65,10 +65,11 @@ class Auth:
         if session_id is None:
             return None
         try:
-            user = self._db.find_user_by(session_id=session_id)
-            return user
+            found_user = self._db.find_user_by(session_id=session_id)
+            return found_user
         except NoResultFound:
             return None
+
 
     def destroy_session(self, user_id: int) -> None:
         """updates user's session id to None
@@ -76,10 +77,11 @@ class Auth:
         if user_id is None:
             return None
         try:
-            user = self._db.find_user_by(id=user_id)
-            self._db.update_user(user.id, session_id=None)
+            found_user = self._db.find_user_by(id=user_id)
+            self._db.update_user(found_user.id, session_id=None)
         except NoResultFound:
             return None
+
 
     def get_reset_password_token(self, email: str) -> str:
         """generate uuid and update reset_token db field

@@ -3,13 +3,16 @@
 import re
 import logging
 import os
+from typing import List
 import mysql.connector
+from mysql.connector import connection
 
 """ filtered logger
 """
 PII_FIELDS = ('name', 'email', 'phone', 'ssn', 'password')
 
-def filter_datum(fields, redaction, message, separator):
+def filter_datum(fields: List[str], redaction: str,
+                 message: str, separator: str) -> str:
     """ returns log message to be obfuscated
     """
     return re.sub(r'(' + '|'.join(map(re.escape, fields)) + r')=[^{}]+'.format(separator), r'\1=' + redaction, message)
@@ -28,7 +31,7 @@ def get_logger() -> logging.Logger:
     logger.propagate = False
     return logger
 
-def get_db():
+def get_db() -> connection.MySQLConnection:
     """connect to db"""
     db_username = os.getenv('PERSONAL_DATA_DB_USERNAME')
     db_pwd = os.getenv('PERSONAL_DATA_DB_PASSWORD', '')
@@ -68,7 +71,7 @@ class RedactingFormatter(logging.Formatter):
         
         return log_message
     
-def main():
+def main() -> None:
     """main fn
     """
     database = get_db();

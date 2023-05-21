@@ -11,11 +11,14 @@ from mysql.connector import connection
 """
 PII_FIELDS = ('name', 'email', 'phone', 'ssn', 'password')
 
+
 def filter_datum(fields: List[str], redaction: str,
                  message: str, separator: str) -> str:
     """ returns log message to be obfuscated
     """
-    return re.sub(r'(' + '|'.join(map(re.escape, fields)) + r')=[^{}]+'.format(separator), r'\1=' + redaction, message)
+    return re.sub(r'(' + '|'.join(map(re.escape, fields)) +
+                  r')=[^{}]+'.format(separator), r'\1=' + redaction, message)
+
 
 def get_logger() -> logging.Logger:
     """ returns a logging.Logger obj
@@ -31,18 +34,19 @@ def get_logger() -> logging.Logger:
     logger.propagate = False
     return logger
 
+
 def get_db() -> connection.MySQLConnection:
     """connect to db"""
-    db_username = os.getenv('PERSONAL_DATA_DB_USERNAME')
-    db_pwd = os.getenv('PERSONAL_DATA_DB_PASSWORD', '')
-    db_host = os.getenv('PERSONAL_DATA_DB_HOST')
-    db_name = os.getenv('PERSONAL_DATA_DB_NAME')
+    db_username=os.getenv('PERSONAL_DATA_DB_USERNAME')
+    db_pwd=os.getenv('PERSONAL_DATA_DB_PASSWORD', '')
+    db_host=os.getenv('PERSONAL_DATA_DB_HOST')
+    db_name=os.getenv('PERSONAL_DATA_DB_NAME')
 
-    connection = mysql.connector.connect(
-        user = db_username,
-        password = db_pwd,
-        host = db_host,
-        database = db_name,
+    connection=mysql.connector.connect(
+        user=db_username,
+        password=db_pwd,
+        host=db_host,
+        database=db_name,
     )
 
     return connection
@@ -67,14 +71,16 @@ class RedactingFormatter(logging.Formatter):
         log_message = super().format(record)
 
         for field in self.fields:
-            log_message = filter_datum([field], self.REDACTION, log_message, self.SEPARATOR)
-        
+            log_message = filter_datum([field],
+                                       self.REDACTION, log_message, self.SEPARATOR)
+
         return log_message
-    
+
+
 def main() -> None:
     """main fn
     """
-    database = get_db();
+    database = get_db()
     cur = database.cursor()
 
     cur.execute('SELECT * FROM users;')
@@ -87,9 +93,10 @@ def main() -> None:
         fields = fields.format(row[0], row[1], row[2], row[3],
                                row[4], row[5], row[6], row[7])
         logger.info(fields)
-    
+
     cur.close()
     database.close()
+
 
 if __name__ == "__main__":
     main()

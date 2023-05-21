@@ -36,11 +36,11 @@ def get_logger() -> logging.Logger:
 
 
 def get_db() -> connection.MySQLConnection:
-    """connect to db"""
-    db_username=os.getenv('PERSONAL_DATA_DB_USERNAME')
-    db_pwd=os.getenv('PERSONAL_DATA_DB_PASSWORD', '')
-    db_host=os.getenv('PERSONAL_DATA_DB_HOST')
-    db_name=os.getenv('PERSONAL_DATA_DB_NAME')
+    """connect to db with env vars"""
+    db_username = os.getenv('PERSONAL_DATA_DB_USERNAME')
+    db_pwd = os.getenv('PERSONAL_DATA_DB_PASSWORD', '')
+    db_host = os.getenv('PERSONAL_DATA_DB_HOST')
+    db_name = os.getenv('PERSONAL_DATA_DB_NAME')
 
     connection=mysql.connector.connect(
         user=db_username,
@@ -60,7 +60,7 @@ class RedactingFormatter(logging.Formatter):
     FORMAT = "[HOLBERTON] %(name)s %(levelname)s %(asctime)-15s: %(message)s"
     SEPARATOR = ";"
 
-    def __init__(self, fields = None):
+    def __init__(self, fields=None):
         """constructor"""
         super(RedactingFormatter, self).__init__(self.FORMAT)
         self.fields = fields or []
@@ -72,13 +72,15 @@ class RedactingFormatter(logging.Formatter):
 
         for field in self.fields:
             log_message = filter_datum([field],
-                                       self.REDACTION, log_message, self.SEPARATOR)
+                    self.REDACTION, log_message, self.SEPARATOR)
 
         return log_message
 
 
 def main() -> None:
-    """main fn
+    """
+    Obtain a database connection using get_db
+    and retrieve all rows in the users table and display each row
     """
     database = get_db()
     cur = database.cursor()

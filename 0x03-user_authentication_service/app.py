@@ -49,6 +49,7 @@ def login():
     response.set_cookie('session_id', session_id)
     return response
 
+
 @app.route('/sessions', methods=['DELETE'], strict_slashes=False)
 def logout():
     """if user with session id exists
@@ -62,6 +63,7 @@ def logout():
     AUTH.destroy_session(user.id)
     return redirect('/')
 
+
 @app.route('/profile', methods=['GET'], strict_slashes=False)
 def profile():
     """checks if user exists"""
@@ -71,6 +73,7 @@ def profile():
     if session_id is None or user is None:
         abort(403)
     return jsonify({'email': user.email}), 200
+
 
 @app.route('/reset_password', methods=['POST'], strict_slashes=False)
 def get_reset_password_token():
@@ -84,6 +87,7 @@ def get_reset_password_token():
     token = AUTH.get_reset_password_token(email)
     return jsonify({'email': email, 'reset_token': token}), 200
 
+
 @app.route('/reset_password', methods='PUT', strict_slashes=False)
 def update_password():
     """reset users password"""
@@ -95,12 +99,11 @@ def update_password():
         AUTH.update_password(reset_token, new_password)
     except Exception:
         abort(403)
-    
+
     return({
         'email': email,
         'message': 'Password updated'
     }), 200
-
 
 
 if __name__ == "__main__":

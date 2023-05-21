@@ -55,12 +55,13 @@ def logout():
     """if user with session id exists
     destroy session and redirect user to '/'
     """
-    user_cookie = request.cookies.get("session_id", None)
+    user_cookie = request.cookies.get("session_id")
     user = AUTH.get_user_from_session_id(user_cookie)
-    if user_cookie is None or user is None:
-        abort(403)
-    AUTH.destroy_session(user.id)
-    return redirect('/')
+    if user is not None:
+        AUTH.destroy_session(user.id)
+        return redirect('/')
+    else:
+        return jsonify({'message': 'Forbidden'}), 403
 
 
 @app.route('/profile', methods=['GET'], strict_slashes=False)

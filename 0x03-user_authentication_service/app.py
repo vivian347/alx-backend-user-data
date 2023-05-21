@@ -9,10 +9,12 @@ AUTH = Auth()
 
 app = Flask(__name__)
 
+
 @app.route('/', methods=['GET'])
 def payload():
     """returns a JSON payload"""
     return jsonify({"message": "Bienvenue"})
+
 
 @app.route('/users', methods=['POST'])
 def users():
@@ -31,6 +33,7 @@ def users():
         return jsonify({
             'message': 'email already registered'
         }), 400
+
 
 @app.route('/sessions', methods=['POST'])
 def login():

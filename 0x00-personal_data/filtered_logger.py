@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
+""" filtered logger
+"""
 
 import re
 import logging
@@ -7,8 +9,6 @@ from typing import List
 import mysql.connector
 from mysql.connector import connection
 
-""" filtered logger
-"""
 PII_FIELDS = ('name', 'email', 'phone', 'ssn', 'password')
 
 
